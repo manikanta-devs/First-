@@ -177,6 +177,57 @@
     <p class="section-label">Our Little Moments</p>
     <h2 class="section-title">Drag these memories around ✦</h2>
     <div id="cards-arena"></div>
+      <script>
+      // Example cards data
+      const cardsData = [
+        { emoji: '💌', title: 'First Message', text: 'The first hello that started it all.' },
+        { emoji: '🌹', title: 'First Gift', text: 'A rose, a smile, and a memory.' },
+        { emoji: '🎶', title: 'Our Song', text: 'Dancing together, even if just in our heads.' },
+        { emoji: '📸', title: 'First Photo', text: 'A moment frozen in time.' },
+        { emoji: '✈️', title: 'First Trip', text: 'Exploring the world, hand in hand.' }
+      ];
+      const arena = document.getElementById('cards-arena');
+      function renderCards() {
+        arena.innerHTML = '';
+        cardsData.forEach((card, i) => {
+          const el = document.createElement('div');
+          el.className = 'love-card';
+          el.style.top = `${60 + i * 30}px`;
+          el.style.left = `${40 + i * 40}px`;
+          el.innerHTML = `
+            <span class="card-emoji">${card.emoji}</span>
+            <div class="card-num">${i + 1}</div>
+            <div class="card-title">${card.title}</div>
+            <div class="card-text">${card.text}</div>
+          `;
+          el.setAttribute('draggable', 'true');
+          // Drag logic
+          let offsetX, offsetY, dragging = false;
+          el.addEventListener('mousedown', e => {
+            dragging = true;
+            el.classList.add('dragging');
+            offsetX = e.clientX - el.offsetLeft;
+            offsetY = e.clientY - el.offsetTop;
+            document.body.style.userSelect = 'none';
+          });
+          document.addEventListener('mousemove', e => {
+            if (dragging) {
+              el.style.left = `${e.clientX - offsetX}px`;
+              el.style.top = `${e.clientY - offsetY}px`;
+            }
+          });
+          document.addEventListener('mouseup', () => {
+            if (dragging) {
+              dragging = false;
+              el.classList.remove('dragging');
+              document.body.style.userSelect = '';
+            }
+          });
+          arena.appendChild(el);
+        });
+      }
+      renderCards();
+      </script>
   </section>
 
   <!-- 3D ORBIT -->
@@ -306,11 +357,19 @@ document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
 })();
 
 /* ── COUNTER ────────────────────────────────────────── */
-const meetDate=new Date('2025-11-11T15:35:00');
-function updateCounter(){
-  const now=new Date(),diff=now-meetDate;
-  const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
-  document.getElementById('cnt-days').textContent=String(d).padStart(3,'0');
-  document.getElementById('cnt-hours').textContent=String(h).padStart(2,'0');
-  document.getElementById('cnt-mins').textContent=String(m).padStart(2,'0');
-  document.getElementById('cnt-secs').textCont
+const meetDate = new Date('2025-11-11T15:35:00');
+function updateCounter() {
+  const now = new Date(), diff = now - meetDate;
+  const d = Math.floor(diff / 86400000),
+        h = Math.floor((diff % 86400000) / 3600000),
+        m = Math.floor((diff % 3600000) / 60000),
+        s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cnt-days').textContent = String(d).padStart(3, '0');
+  document.getElementById('cnt-hours').textContent = String(h).padStart(2, '0');
+  document.getElementById('cnt-mins').textContent = String(m).padStart(2, '0');
+  document.getElementById('cnt-secs').textContent = String(s).padStart(2, '0');
+}
+updateCounter();
+setInterval(updateCounter, 1000);
+
+// (Draggable cards logic is now included above in the cards section)
